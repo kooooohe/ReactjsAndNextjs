@@ -1,42 +1,73 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import './App.css';
 //import Rect from './Rect';
 
+function mappingState(state) {
+  return state;
+}
+
 class App extends Component {
-  msgStyle = {
-    fontSize:"24px",
-    color:"#900",
-    margin:"20px 0px",
-    padding: "5px",
-    borderBottom: "2px solid #900",
-  }
-  btnStyle = {
-    fontSize: "20px",
-    padding: "0px 10px"
-  }
   constructor(props) {
     super(props);
-    this.state = {
-      counter: 0,
-      msg:'count start!',
-    }
-    this.doAction = this.doAction.bind(this);
   }
-  doAction(e) {
-    this.setState((state) => ({
-      counter: state.counter + 1,
-      msg: 'count: ' + state.counter,
-    }))
-  }
-  render(){
+
+  render() {
     return (
       <div>
-        <h1>React</h1>
-        <p style={this.msgStyle}>{this.state.msg}</p>
-        <button style={this.btnStyle} onClick={this.doAction}>Click</button>
+        <h1>Redux</h1>
+        <Message />
+        <Button />
       </div>
     )
   }
 }
+
+App = connect()(App)
+
+class Message extends Component {
+  style = {
+    fontSize:"20px",
+    padding:"20px 5px"
+  }
+  render(){
+    return (
+      <p style={this.style}>
+        {this.props.message}: {this.props.counter}
+      </p>
+    )
+  }
+}
+
+Message = connect(mappingState) (Message)
+
+class Button extends Component {
+  style = {
+    fontSize:"16px",
+    padding: "5px 10px"
+  }
+
+  constructor(props) {
+    super(props);
+    this.doAction = this.doAction.bind(this)
+  }
+
+  doAction(e) {
+    if (e.shiftKey){
+      this.props.dispatch({ type: 'DECREMENT'} )
+    } else {
+      this.props.dispatch({ type: 'INCREMENT'} )
+    }
+  }
+  render () {
+    return (
+      <button style={this.style}
+        onClick={this.doAction}>
+        Click
+      </button>
+    )
+  }
+}
+Button = connect() (Button)
 
 export default App;
